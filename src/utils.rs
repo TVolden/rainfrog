@@ -136,7 +136,13 @@ pub fn initialize_logging() -> Result<()> {
   let directory = get_data_dir();
   std::fs::create_dir_all(directory.clone())?;
   let log_path = directory.join(LOG_FILE.clone());
-  let log_file = std::fs::File::create(log_path)?;
+  #[cfg(unix)]
+  let log_file = {
+    use std::os::unix::fs::OpenOptionsExt;
+    std::fs::OpenOptions::new().write(true).create(true).truncate(true).mode(0o600).open(&log_path)?
+  };
+  #[cfg(not(unix))]
+  let log_file = std::fs::File::create(&log_path)?;
   // TODO: Audit that the environment access only happens in single-threaded code.
   unsafe {
     std::env::set_var(

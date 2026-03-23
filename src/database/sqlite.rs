@@ -63,7 +63,7 @@ impl Database for SqliteDriver<'_> {
           log::info!("{:?} rows, {:?} affected", rows.rows.len(), rows.rows_affected);
         },
         Err(ref e) => {
-          log::error!("{e:?}");
+          log::error!("{e}");
         },
       };
       QueryResultsWithMetadata { results, statement_type: statement_type.clone() }
@@ -108,7 +108,7 @@ impl Database for SqliteDriver<'_> {
           match result {
             // if tx failed to start, return the error immediately
             QueryResultsWithMetadata { results: Err(e), statement_type } => {
-              log::error!("Transaction didn't start: {e:?}");
+              log::error!("Transaction didn't start: {e}");
               (
                 DbTaskResult::Finished(QueryResultsWithMetadata {
                   results: Err(e),
@@ -155,7 +155,7 @@ impl Database for SqliteDriver<'_> {
           (QueryResultsWithMetadata { results: Ok(rows), statement_type: Some(statement_type) }, tx)
         },
         Err(e) => {
-          log::error!("{e:?}");
+          log::error!("{e}");
           (QueryResultsWithMetadata { results: Err(e), statement_type: Some(statement_type) }, tx)
         },
       }
@@ -227,6 +227,7 @@ impl Database for SqliteDriver<'_> {
     if materialized {
       return "select 'SQLite does not support materialized views' as message".to_owned();
     }
+    let view = escape_sql_str(view);
     format!("select sql as definition from sqlite_master where type = 'view' and name = '{view}'")
   }
 }
@@ -261,6 +262,10 @@ impl SqliteDriver<'_> {
       },
     }
   }
+}
+
+fn escape_sql_str(s: &str) -> String {
+  s.replace('\'', "''")
 }
 
 async fn query_with_pool(pool: Arc<sqlx::Pool<Sqlite>>, query: String) -> Result<Rows> {

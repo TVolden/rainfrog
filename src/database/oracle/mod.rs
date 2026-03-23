@@ -74,7 +74,7 @@ impl Database for OracleDriver {
             log::info!("{:?} rows, {:?} affected", rows.rows.len(), rows.rows_affected);
           },
           Err(ref e) => {
-            log::error!("{e:?}");
+            log::error!("{e}");
           },
         };
         Ok(QueryResultsWithMetadata { results, statement_type })
@@ -127,7 +127,7 @@ impl Database for OracleDriver {
           match result {
             // if tx failed to start, return the error immediately
             QueryResultsWithMetadata { results: Err(e), statement_type } => {
-              log::error!("Transaction didn't start: {e:?}");
+              log::error!("Transaction didn't start: {e}");
               self.querying_conn = None;
               (
                 DbTaskResult::Finished(QueryResultsWithMetadata {
@@ -205,22 +205,32 @@ impl Database for OracleDriver {
   }
 
   fn preview_columns_query(&self, schema: &str, table: &str) -> String {
+    let table = escape_sql_str(table);
+    let schema = escape_sql_str(schema);
     format!("select * from user_tab_columns where table_name = '{}' and user = '{}'", table, schema)
   }
 
   fn preview_constraints_query(&self, schema: &str, table: &str) -> String {
+    let table = escape_sql_str(table);
+    let schema = escape_sql_str(schema);
     format!("select * from user_constraints where table_name = '{}' and user = '{}'", table, schema)
   }
 
   fn preview_indexes_query(&self, schema: &str, table: &str) -> String {
+    let table = escape_sql_str(table);
+    let schema = escape_sql_str(schema);
     format!("select * from user_ind_columns where table_name = '{}' and user = '{}'", table, schema)
   }
 
   fn preview_policies_query(&self, schema: &str, table: &str) -> String {
+    let table = escape_sql_str(table);
+    let schema = escape_sql_str(schema);
     format!("select * from user_policies where object_name = '{}' and user = '{}'", table, schema)
   }
 
   fn preview_view_definition_query(&self, schema: &str, view: &str, materialized: bool) -> String {
+    let view = escape_sql_str(view);
+    let schema = escape_sql_str(schema);
     if materialized {
       return format!(
         "select query as definition from user_mviews where mview_name = '{}' and user = '{}'",
@@ -234,6 +244,8 @@ impl Database for OracleDriver {
   }
 
   fn preview_function_definition_query(&self, schema: &str, function: &str) -> String {
+    let function = escape_sql_str(function);
+    let schema = escape_sql_str(schema);
     format!(
       "select listagg(text) within group (order by line) as definition
         from user_source
@@ -243,6 +255,10 @@ impl Database for OracleDriver {
       function, schema
     )
   }
+}
+
+fn escape_sql_str(s: &str) -> String {
+  s.replace('\'', "''")
 }
 
 fn query_with_pool(pool: &Pool, query: &str) -> Result<Rows> {
