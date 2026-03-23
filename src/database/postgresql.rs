@@ -358,29 +358,39 @@ impl Database for PostgresDriver {
   }
 
   fn preview_columns_query(&self, schema: &str, table: &str) -> String {
+    let schema = escape_sql_str(schema);
+    let table = escape_sql_str(table);
     format!(
       "select column_name, * from information_schema.columns where table_schema = '{schema}' and table_name = '{table}'"
     )
   }
 
   fn preview_constraints_query(&self, schema: &str, table: &str) -> String {
+    let schema = escape_sql_str(schema);
+    let table = escape_sql_str(table);
     format!(
       "select constraint_name, * from information_schema.table_constraints where table_schema = '{schema}' and table_name = '{table}'"
     )
   }
 
   fn preview_indexes_query(&self, schema: &str, table: &str) -> String {
+    let schema = escape_sql_str(schema);
+    let table = escape_sql_str(table);
     format!(
       "select indexname, indexdef, * from pg_indexes where schemaname = '{schema}' and tablename = '{table}'"
     )
   }
 
   fn preview_policies_query(&self, schema: &str, table: &str) -> String {
+    let schema = escape_sql_str(schema);
+    let table = escape_sql_str(table);
     format!("select * from pg_policies where schemaname = '{schema}' and tablename = '{table}'")
   }
 
   fn preview_view_definition_query(&self, schema: &str, view: &str, materialized: bool) -> String {
     let relkind = if materialized { "m" } else { "v" };
+    let schema = escape_sql_str(schema);
+    let view = escape_sql_str(view);
     format!(
       "select pg_get_viewdef(c.oid, true) as definition
         from pg_class c
@@ -392,6 +402,8 @@ impl Database for PostgresDriver {
   }
 
   fn preview_function_definition_query(&self, schema: &str, function: &str) -> String {
+    let schema = escape_sql_str(schema);
+    let function = escape_sql_str(function);
     format!(
       "select pg_get_functiondef(p.oid) as definition
         from pg_proc p
@@ -484,6 +496,10 @@ impl PostgresDriver {
       },
     }
   }
+}
+
+fn escape_sql_str(s: &str) -> String {
+  s.replace('\'', "''")
 }
 
 async fn query_with_pool(pool: Arc<sqlx::Pool<Postgres>>, query: String) -> Result<Rows> {

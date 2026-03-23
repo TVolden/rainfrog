@@ -269,6 +269,7 @@ impl Database for SqliteDriver {
     if materialized {
       return "select 'SQLite does not support materialized views' as message".to_owned();
     }
+    let view = escape_sql_str(view);
     format!("select sql as definition from sqlite_master where type = 'view' and name = '{view}'")
   }
 }
@@ -303,6 +304,10 @@ impl SqliteDriver {
       },
     }
   }
+}
+
+fn escape_sql_str(s: &str) -> String {
+  s.replace('\'', "''")
 }
 
 async fn query_with_pool(pool: Arc<sqlx::Pool<Sqlite>>, query: String) -> Result<Rows> {

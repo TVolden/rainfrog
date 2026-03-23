@@ -337,6 +337,8 @@ impl Database for MySqlDriver {
   }
 
   fn preview_columns_query(&self, schema: &str, table: &str) -> String {
+    let schema = escape_sql_str(schema);
+    let table = escape_sql_str(table);
     format!(
       "select column_name, data_type, is_nullable, column_default, extra, column_comment
         from information_schema.columns
@@ -346,6 +348,8 @@ impl Database for MySqlDriver {
   }
 
   fn preview_constraints_query(&self, schema: &str, table: &str) -> String {
+    let schema = escape_sql_str(schema);
+    let table = escape_sql_str(table);
     format!(
       "select constraint_name, constraint_type, enforced,
         group_concat(column_name order by ordinal_position) as column_names
@@ -358,6 +362,8 @@ impl Database for MySqlDriver {
   }
 
   fn preview_indexes_query(&self, schema: &str, table: &str) -> String {
+    let schema = escape_sql_str(schema);
+    let table = escape_sql_str(table);
     format!(
       "select index_name, column_name, non_unique, seq_in_index, index_type
         from information_schema.statistics
@@ -374,6 +380,8 @@ impl Database for MySqlDriver {
     if materialized {
       return "select 'MySQL does not support materialized views' as message".to_owned();
     }
+    let schema = escape_sql_str(schema);
+    let view = escape_sql_str(view);
     format!(
       "select view_definition
         from information_schema.views
@@ -382,6 +390,8 @@ impl Database for MySqlDriver {
   }
 
   fn preview_function_definition_query(&self, schema: &str, function: &str) -> String {
+    let schema = escape_sql_str(schema);
+    let function = escape_sql_str(function);
     format!(
       "select routine_definition
         from information_schema.routines
@@ -489,6 +499,10 @@ impl MySqlDriver {
       },
     }
   }
+}
+
+fn escape_sql_str(s: &str) -> String {
+  s.replace('\'', "''")
 }
 
 async fn query_with_pool(pool: Arc<sqlx::Pool<MySql>>, query: String) -> Result<Rows> {
