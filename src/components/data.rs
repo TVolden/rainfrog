@@ -737,10 +737,12 @@ impl TableForYank {
 
     let mut buff = String::new();
 
+    buff.push_str("```sql\n");
     for statement in &self.sql {
       buff.push_str(statement);
       buff.push('\n');
     }
+    buff.push_str("```\n");
 
     buff.push('\n');
 
@@ -845,10 +847,12 @@ mod yank {
     let result = data_to_yank.yank();
 
     let expected = "\
+```sql
 select
 *
 from
 something
+```
 
 | id  | name  | age  |
 | --- | ----- | ---- |

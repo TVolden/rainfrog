@@ -11,6 +11,7 @@ data_row_spacer = false
 
 [keybindings.Menu]
 "<Ctrl-c>" = "Quit"
+"<Ctrl-q>" = "Quit"
 "q" = "AbortQuery"
 "<Alt-1>" = "FocusMenu"
 "<Alt-2>" = "FocusEditor"
@@ -26,6 +27,7 @@ data_row_spacer = false
 "<Backtab>" = "CycleFocusBackwards"
 
 [keybindings.Editor]
+"<Ctrl-q>" = "Quit"
 "<Alt-q>" = "AbortQuery"
 "<F5>" = "SubmitEditorQuery"
 "<F7>" = "SubmitEditorQueryBypassParser"
@@ -43,6 +45,7 @@ data_row_spacer = false
 
 [keybindings.History]
 "<Ctrl-c>" = "Quit"
+"<Ctrl-q>" = "Quit"
 "q" = "AbortQuery"
 "<Alt-1>" = "FocusMenu"
 "<Alt-2>" = "FocusEditor"
@@ -59,6 +62,7 @@ data_row_spacer = false
 
 [keybindings.Data]
 "<Ctrl-c>" = "Quit"
+"<Ctrl-q>" = "Quit"
 "q" = "AbortQuery"
 "<Alt-1>" = "FocusMenu"
 "<Alt-2>" = "FocusEditor"
@@ -75,6 +79,7 @@ data_row_spacer = false
 
 [keybindings.Favorites]
 "<Ctrl-c>" = "Quit"
+"<Ctrl-q>" = "Quit"
 "q" = "AbortQuery"
 "<Alt-1>" = "FocusMenu"
 "<Alt-2>" = "FocusEditor"
@@ -91,3 +96,4 @@ data_row_spacer = false
 
 [keybindings.PopUp]
 "<Ctrl-c>" = "Quit"
+"<Ctrl-q>" = "Quit"
