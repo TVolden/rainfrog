@@ -754,27 +754,25 @@ impl TableForYank {
           buff.push_str(&cell);
         }
       }
+      buff.push('|');
       buff.push('\n');
     }
 
     buff
   }
 
-  fn format_column(col: &mut VecDeque<String>, index: usize, last_index: usize) {
-    let width = col.iter().map(|s| s.len()).max().unwrap_or(1) + 1;
+  fn format_column(col: &mut VecDeque<String>, _index: usize, _last_index: usize) {
+    let width = col.iter().map(|s| s.len()).max().unwrap_or(1);
 
     let format_cell = |s: &str| {
-      let prefix = if index == 0 { " " } else { "| " };
-      let padding =
-        if index == last_index { " ".repeat(0) } else { " ".repeat(width.saturating_sub(s.len())) };
-      format!("{prefix}{s}{padding}")
+      let padding = " ".repeat(width.saturating_sub(s.len()));
+      format!("| {s}{padding} ")
     };
 
     col.iter_mut().for_each(|s| *s = format_cell(s));
 
     if let Some(header) = col.pop_front() {
-      let div =
-        if index == 0 { "-".repeat(width + 1) } else { format!("+{}", "-".repeat(width + 1)) };
+      let div = format!("| {} ", "-".repeat(width));
       col.push_front(div);
       col.push_front(header);
     }
@@ -852,11 +850,13 @@ select
 from
 something
 
- id  | name  | age
------+-------+------
- id1 | name1 | age1
- id2 | name2 | age2
- id3 | name3 | age3
+| id  | name  | age  |
+| --- | ----- | ---- |
+| id1 | name1 | age1 |
+| id2 | name2 | age2 |
+| id3 | name3 | age3 |
 ";
+
+    assert_eq!(expected, result);
   }
 }
