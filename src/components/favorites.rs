@@ -295,7 +295,7 @@ impl Component for Favorites {
   fn draw(&mut self, f: &mut Frame<'_>, area: Rect, app_state: &AppState) -> Result<()> {
     let focused = app_state.focus == Focus::Favorites;
     let block = Block::default().borders(Borders::ALL).border_style(if focused {
-      Style::new().green()
+      Style::new().fg(app_state.frame_color)
     } else {
       Style::new().dim()
     });

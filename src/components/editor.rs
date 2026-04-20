@@ -214,7 +214,7 @@ impl Component for Editor<'_> {
       .vim_state
       .mode
       .block()
-      .border_style(if focused { Style::new().green() } else { Style::new().dim() })
+      .border_style(if focused { Style::new().fg(app_state.frame_color) } else { Style::new().dim() })
       .title(Line::from(duration_string).right_aligned());
 
     self.textarea.set_cursor_style(self.cursor_style);

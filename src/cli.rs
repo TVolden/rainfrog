@@ -67,6 +67,13 @@ pub struct Cli {
   )]
   pub enable_cleartext_plugin: bool,
 
+  #[arg(
+    long = "frame-color",
+    value_name = "COLOR",
+    help = "Color for focused frame borders (e.g. green, red, blue, yellow, cyan, magenta)"
+  )]
+  pub frame_color: Option<String>,
+
   #[arg(skip)]
   pub connection_name: Option<String>,
 }

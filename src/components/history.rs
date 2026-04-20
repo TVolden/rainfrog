@@ -148,7 +148,7 @@ impl Component for History {
     });
     let block = Block::default()
       .borders(Borders::ALL)
-      .border_style(if focused { Style::new().green() } else { Style::new().dim() })
+      .border_style(if focused { Style::new().fg(app_state.frame_color) } else { Style::new().dim() })
       .title(Line::from(duration_string).right_aligned());
     let scrollbar_margin = area.inner(Margin { vertical: 1, horizontal: 0 });
 
