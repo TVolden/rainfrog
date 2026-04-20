@@ -537,7 +537,7 @@ impl Component for Data<'_> {
     let focused = app_state.focus == Focus::Data;
 
     let mut block = Block::default().borders(Borders::ALL).border_style(if focused {
-      Style::new().green()
+      Style::new().fg(app_state.frame_color)
     } else {
       Style::new().dim()
     });

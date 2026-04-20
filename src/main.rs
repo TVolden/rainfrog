@@ -27,8 +27,10 @@ use clap::Parser;
 use cli::{Cli, CliCommand, Driver, extract_driver_from_url, prompt_for_database_selection};
 use color_eyre::eyre::Result;
 use config::{
-  Config, ConnectionString, default_config_contents, existing_config_path, preferred_config_path,
+  Config, ConnectionString, default_config_contents, existing_config_path, parse_color,
+  preferred_config_path,
 };
+use ratatui::style::Color;
 use dotenvy::dotenv;
 use keyring::get_password;
 
@@ -39,7 +41,9 @@ use crate::{
 
 async fn run_app(mut args: Cli, config: Config, driver: Driver) -> Result<()> {
   let mouse_mode = args.mouse_mode.take();
-  let mut app = App::new(mouse_mode, config)?;
+  let frame_color =
+    args.frame_color.as_deref().and_then(parse_color).unwrap_or(Color::Indexed(2));
+  let mut app = App::new(mouse_mode, frame_color, config)?;
   app.run(driver, args).await?;
   Ok(())
 }

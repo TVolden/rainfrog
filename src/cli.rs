@@ -60,6 +60,13 @@ pub struct Cli {
   )]
   pub driver: Option<Driver>,
 
+  #[arg(
+    long = "frame-color",
+    value_name = "COLOR",
+    help = "Color for focused frame borders (e.g. green, red, blue, yellow, cyan, magenta)"
+  )]
+  pub frame_color: Option<String>,
+
   #[arg(skip)]
   pub connection_name: Option<String>,
 }

@@ -524,7 +524,7 @@ impl Component for Menu {
             .title(format!(" 󰦄  {schema_label} <alt+1> (schema) "))
             .borders(Borders::ALL)
             .border_style(if focused && self.menu_focus == MenuFocus::Schema {
-              Style::default().fg(Color::Green)
+              Style::default().fg(app_state.frame_color)
             } else if focused {
               Style::default()
             } else {

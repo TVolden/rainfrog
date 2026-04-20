@@ -49,6 +49,7 @@ pub struct AppState {
   pub last_query_start: Option<chrono::DateTime<chrono::Utc>>,
   pub last_query_end: Option<chrono::DateTime<chrono::Utc>>,
   pub query_task_running: bool,
+  pub frame_color: Color,
 }
 
 pub struct Components<'a> {
@@ -73,7 +74,7 @@ pub struct App {
 }
 
 impl App {
-  pub fn new(mouse_mode_override: Option<bool>, config: Config) -> Result<Self> {
+  pub fn new(mouse_mode_override: Option<bool>, frame_color: Color, config: Config) -> Result<Self> {
     let focus = Focus::Menu;
     let menu = Menu::new();
     let editor = Editor::new();
@@ -102,6 +103,7 @@ impl App {
         last_query_end: None,
         favorites: favorite_entries,
         query_task_running: false,
+        frame_color,
       },
       last_focused_tab: Focus::Editor,
       last_focused_component: focus,
@@ -626,7 +628,10 @@ impl App {
       }
     }
     let tabs = Tabs::new(vec![" 󰤏 query <alt+2>", "   history <alt+4>", "   favorites <alt+5>"])
-      .highlight_style(Style::new().fg(self.state.focus.tab_color()).reversed())
+      .highlight_style(Style::new().fg(match self.state.focus {
+        Focus::Editor | Focus::History | Focus::Favorites => self.state.frame_color,
+        _ => Color::default(),
+      }).reversed())
       .select(self.last_focused_tab.tab_index())
       .padding(" ", "")
       .divider(" ");
